@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список пользователей</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+</head>
+<body>
+<h1 align="center">Список resumes</h1>
+<table id="resume-table" border="1">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Content</th>
+        <th>email</th>
+        <th>phone</th>
+        <th>Experience</th>
+        <th>Skills</th>
+
+    </tr>
+    </thead>
+    <tbody id="resume-list">
+    <!-- Пользователи будут добавлены здесь -->
+    </tbody>
+</table>
+
+<script>
+    // Функция для получения пользователей
+    fetch('/api/resumes') // Отправляем AJAX-запрос на тот же сервер
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Сеть ответа не в порядке');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const resumeList = document.getElementById('resume-list');
+            // Очищаем предыдущие данные перед добавлением новых
+            resumeList.innerHTML = '';
+
+            // Проходимся по массиву пользователей и добавляем их в таблицу
+            data.forEach(resume => {
+                const row = document.createElement('tr');
+
+                const name = document.createElement('td');
+                name.textContent = resume.name;
+                row.appendChild(name);
+
+                const content= document.createElement('td');
+                content.textContent = resume.content;
+                row.appendChild(content);
+
+                const email = document.createElement('td');
+                email.textContent = resume.email;
+                row.appendChild(email);
+
+                const phone = document.createElement('td');
+                phone.textContent = resume.phone;
+                row.appendChild(phone);
+
+                const experience= document.createElement('td');
+                experience.textContent = resume.experience;
+                row.appendChild(experience);
+
+                const skills = document.createElement('td');
+                skills.textContent = resume.skills;
+                row.appendChild(skills);
+
+                resumeList.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Ошибка:', error));
+</script>
+</body>
+</html>

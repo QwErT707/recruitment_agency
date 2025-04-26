@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список пользователей</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+</head>
+<body>
+<h1 align="center">Список vacancies</h1>
+<table id="job-table" border="1">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Employer</th>
+    </tr>
+    </thead>
+    <tbody id="job-list">
+    <!-- Пользователи будут добавлены здесь -->
+    </tbody>
+</table>
+
+<script>
+    // Функция для получения пользователей
+    fetch('/api/jobs') // Отправляем AJAX-запрос на тот же сервер
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Сеть ответа не в порядке');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const jobList = document.getElementById('job-list');
+            // Очищаем предыдущие данные перед добавлением новых
+            jobList.innerHTML = '';
+
+            // Проходимся по массиву пользователей и добавляем их в таблицу
+            data.forEach(job => {
+                const row = document.createElement('tr');
+
+                const title = document.createElement('td');
+                title.textContent = job.title;
+                row.appendChild(title);
+
+                const description= document.createElement('td');
+                description.textContent = job.description;
+                row.appendChild(description);
+
+                const employer = document.createElement('td');
+                employer.textContent = job.employer.username;
+                row.appendChild(employer);
+
+                jobList.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Ошибка:', error));
+</script>
+</body>
+</html>

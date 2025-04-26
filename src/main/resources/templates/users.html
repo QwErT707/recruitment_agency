@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список пользователей</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+</head>
+<body>
+<h1>Список пользователей</h1>
+<table id="user-table" border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Имя пользователя</th>
+        <th>Роль</th>
+    </tr>
+    </thead>
+    <tbody id="user-list">
+    <!-- Пользователи будут добавлены здесь -->
+    </tbody>
+</table>
+
+<script>
+    // Функция для получения пользователей
+    fetch('/api/users') // Отправляем AJAX-запрос на тот же сервер
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Сеть ответа не в порядке');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const userList = document.getElementById('user-list');
+            // Очищаем предыдущие данные перед добавлением новых
+            userList.innerHTML = '';
+
+            // Проходимся по массиву пользователей и добавляем их в таблицу
+            data.forEach(user => {
+                const row = document.createElement('tr');
+
+                const id = document.createElement('td');
+                id.textContent = user.id;
+                row.appendChild(id);
+
+                const username = document.createElement('td');
+                username.textContent = user.username;
+                row.appendChild(username);
+
+                const role = document.createElement('td');
+                role.textContent = user.role;
+                row.appendChild(role);
+
+                userList.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Ошибка:', error));
+</script>
+</body>
+</html>
